@@ -27,4 +27,7 @@ Parameters (in action or view):
 	<!-- View -->
 	<view id="MAIN_GAME" name="MainGame">
 	</view>
+	
+	<view id="TEST_SCENE" name="TestScene">
+	</view>
 </flow>
