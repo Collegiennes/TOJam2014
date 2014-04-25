@@ -6,7 +6,7 @@ public class Hand : MonoBehaviour
 {
 	#region Members and properties
 	// constants
-	private const float SPEED = 500.0f;
+	private const float SPEED = 800.0f;
 	private const float GRABBED_OFFSET = -500.0f;
 	private const float RELEASED_OFFSET = 0.0f;
 	
@@ -79,6 +79,8 @@ public class Hand : MonoBehaviour
 	{
 		if (m_GrabbedObstacle != null && m_GrabbedObstacleJoin == null)
 		{
+			m_GrabbedObstacle.transform.position = transform.position;
+
 			m_GrabbedObstacleJoin = gameObject.AddComponent<HingeJoint>();
 			m_GrabbedObstacleJoin.connectedBody = m_GrabbedObstacle.rigidbody;
 		}

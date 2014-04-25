@@ -8,3 +8,5 @@ technobeanie_stuff/technobeanie_stuff-csharp.sln
 technobeanie_stuff/technobeanie_stuff.sln
 technobeanie_stuff/technobeanie_stuff.userprefs
 .DS_Store
+technobeanie_stuff/UnityVS.technobeanie_stuff.CSharp.Editor.csproj
+technobeanie_stuff/UnityVS.technobeanie_stuff.CSharp.csproj
