@@ -1,0 +1,3 @@
+*.suo
+*.DotSettings
+/obj/
