@@ -5,11 +5,16 @@ ModelImporter:
   fileIDToRecycleName:
     100000: Cube
     100002: //RootNode
+    100004: mesh_plank
     400000: Cube
     400002: //RootNode
+    400004: mesh_plank
     2300000: Cube
+    2300002: mesh_plank
     3300000: Cube
+    3300002: mesh_plank
     4300000: Cube
+    4300002: mesh_plank
     9500000: //RootNode
   materials:
     importMaterials: 1
