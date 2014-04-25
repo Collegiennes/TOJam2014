@@ -8,6 +8,10 @@ public partial class ControllerInputManager
 	// constants
 	
 	// enums
+	public enum eButtonAliases
+	{
+		GRAB
+	}
 	
 	// public
 	

@@ -10,8 +10,8 @@ public class ControllerButton : ActionButton
 	// enums
 	
 	// public
-	public PlayerInputManager.eButtonAliases m_ButtonAlias;
-	public PlayerInputManager.eButtonAliases m_SelectedButtonAlias;
+	public ControllerInputManager.eButtonAliases m_ButtonAlias;
+	public ControllerInputManager.eButtonAliases m_SelectedButtonAlias;
 	
 	// protected
 	
@@ -29,19 +29,19 @@ public class ControllerButton : ActionButton
 			return;
 		}
 
-		if (PlayerInputManager.Instance.GetButtonDown(m_ButtonAlias.ToString()))
+		if (ControllerInputManager.Instance.GetButtonDown(m_ButtonAlias.ToString()).Count > 0)
 		{
 			OnTouchDown(new TouchEvent(transform.position, transform.position, TouchRawType.LeftClick));
 		}
-		else if (PlayerInputManager.Instance.GetButtonUp(m_ButtonAlias.ToString()))
+		else if (ControllerInputManager.Instance.GetButtonUp(m_ButtonAlias.ToString()).Count > 0)
 		{
 			OnTouchUp(new TouchEvent(transform.position, transform.position, TouchRawType.LeftClick));
 		}
-		else if (PlayerInputManager.Instance.GetButtonDown(m_SelectedButtonAlias.ToString()))
+		else if (ControllerInputManager.Instance.GetButtonDown(m_SelectedButtonAlias.ToString()).Count > 0)
 		{
 			OnButtonDown();
 		}
-		else if (PlayerInputManager.Instance.GetButtonUp(m_SelectedButtonAlias.ToString()))
+		else if (ControllerInputManager.Instance.GetButtonUp(m_SelectedButtonAlias.ToString()).Count > 0)
 		{
 			OnButtonUp();
 		}

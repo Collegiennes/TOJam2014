@@ -16,7 +16,7 @@ public class ControllerButtonManager : Observer
 
 	// private
 	private bool m_IsActive = true;
-	private PlayerInputManager.ControllerInput m_ControllerInput = PlayerInputManager.ControllerInput.None;
+	private ControllerInputManager.eControllerId m_ControllerInput = ControllerInputManager.eControllerId.NONE;
 
 	// properties
 	public bool IsActive
@@ -36,7 +36,7 @@ public class ControllerButtonManager : Observer
 		}
 	}
 	
-	public PlayerInputManager.ControllerInput ControllerInput
+	public ControllerInputManager.eControllerId ControllerInput
 	{
 		set { m_ControllerInput = value; }
 	}
@@ -113,14 +113,13 @@ public class ControllerButtonManager : Observer
 		{
 			// TODO: Find a way not to be dependant of PlayerInputManager.
 			Vector2 leftJoystick = Vector2.zero;
-			if (m_ControllerInput != PlayerInputManager.ControllerInput.None)
+			if (m_ControllerInput != ControllerInputManager.eControllerId.NONE)
 			{
-				leftJoystick = PlayerInputManager.Instance.GetLeftJoystick(m_ControllerInput);
+				leftJoystick = ControllerInputManager.Instance.GetLeftJoystick(m_ControllerInput);
 			}
 			else
 			{
-				List<PlayerInputManager.ControllerInput> controllerInputs;
-				List<Vector2> leftJoysticks = PlayerInputManager.Instance.GetLeftJoystick(out controllerInputs);
+				Dictionary<ControllerInputManager.eControllerId, Vector2> leftJoysticks = ControllerInputManager.Instance.GetLeftJoystick();
 				leftJoystick = leftJoysticks.Count > 0 ? leftJoysticks[0] : Vector2.zero;
 			}
 			
