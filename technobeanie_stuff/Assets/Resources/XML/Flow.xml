@@ -22,31 +22,9 @@ Parameters (in action or view):
 ********************************* -->
 <flow viewDepth="100" overlayOffset="1" loadingMinDuration="0.5">
 	<!-- Global Actions -->
-	<action name="GO_TO_MAIN_MENU" viewId="MAIN_MENU"/>
+	<action name="GO_TO_MAIN_GAME" viewId="MAIN_GAME"/>
 	
 	<!-- View -->
-	<view id="MAIN_MENU" name="MainMenu">
-		<action name="2_PLAYERS" viewId="MAIN_MENU"/>
-		<action name="3_PLAYERS" viewId="MAIN_MENU"/>
-		<action name="4_PLAYERS" viewId="MAIN_MENU"/>
-		
-		<action name="GO_TO_SELECT_CHARACTERS" viewId="SELECT_CHARACTERS"/>
-	</view>
-	
-	<view id="SELECT_CHARACTERS" name="SelectCharacters">
-		<action name="ADD_WHITE_MAGE" viewId="SELECT_CHARACTERS"/>
-		<action name="ADD_GREEN_MAGE" viewId="SELECT_CHARACTERS"/>
-		<action name="ADD_FIGHTER" viewId="SELECT_CHARACTERS"/>
-		
-		<action name="GO_TO_GAME" viewId="MAIN_GAME"/>
-	</view>
-	
 	<view id="MAIN_GAME" name="MainGame">
-	</view>
-	
-	<!-- Popups -->
-	<view id="DIALOG_BOX" name="DialogBox">
-		<action name="SUCCESS"/>
-		<action name="CLOSE"/>
 	</view>
 </flow>
