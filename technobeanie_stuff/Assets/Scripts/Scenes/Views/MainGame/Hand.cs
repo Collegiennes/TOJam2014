@@ -7,6 +7,8 @@ public class Hand : MonoBehaviour
 	#region Members and properties
 	// constants
 	private const float SPEED = 500.0f;
+	private const float GRABBED_OFFSET = -500.0f;
+	private const float RELEASED_OFFSET = 0.0f;
 	
 	// enums
 	
@@ -19,6 +21,8 @@ public class Hand : MonoBehaviour
 	// protected
 	
 	// private
+	private Collider m_GrabbedObstacle = null;
+	private HingeJoint m_GrabbedObstacleJoin = null;
 	
 	// properties
 	#endregion
@@ -28,16 +32,38 @@ public class Hand : MonoBehaviour
 	{
 		// Movements.
 		Vector2 movement = ControllerInputManager.Instance.GetLeftJoystick(m_ControllerId);
-		transform.position += new Vector3(movement.x, movement.y, 0.0f) * (Time.deltaTime * SPEED);
+		transform.position += new Vector3(movement.x, 0.0f, movement.y) * (Time.deltaTime * SPEED);
 
 		// Buttons.
 		if (ControllerInputManager.Instance.GetButton(m_ControllerId, ControllerInputManager.eButtonAliases.GRAB.ToString()))
 		{
 			m_Asset.spriteId = m_Asset.GetSpriteIdByName(m_HandGrabbedAssetName);
+			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, GRABBED_OFFSET);
+
+			GrabObstacle();
 		}
 		else
 		{
 			m_Asset.spriteId = m_Asset.GetSpriteIdByName(m_HandEmptyAssetName);
+			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, RELEASED_OFFSET);
+
+			ReleaseObstacle();
+		}
+	}
+
+	private void OnTriggerEnter(Collider other) 
+	{
+		if (m_GrabbedObstacle == null && IsAnObstacle(other))
+		{
+			m_GrabbedObstacle = other;
+		}
+	}
+
+	private void OnTriggerExit(Collider other) 
+	{
+		if (other == m_GrabbedObstacle)
+		{
+			m_GrabbedObstacle = null;
 		}
 	}
 	#endregion
@@ -49,5 +75,26 @@ public class Hand : MonoBehaviour
 	#endregion
 	
 	#region Private Methods
+	private void GrabObstacle()
+	{
+		if (m_GrabbedObstacle != null && m_GrabbedObstacleJoin == null)
+		{
+			m_GrabbedObstacleJoin = gameObject.AddComponent<HingeJoint>();
+			m_GrabbedObstacleJoin.connectedBody = m_GrabbedObstacle.rigidbody;
+		}
+	}
+	
+	private void ReleaseObstacle()
+	{
+		if (m_GrabbedObstacleJoin != null)
+		{
+			Destroy(m_GrabbedObstacleJoin);
+		}
+	}
+	
+	private bool IsAnObstacle(Collider collider)
+	{
+		return (collider.gameObject.layer == LayerMask.NameToLayer("Death") || collider.gameObject.layer == LayerMask.NameToLayer("DeathNoCollision"));
+	}
 	#endregion
 }
