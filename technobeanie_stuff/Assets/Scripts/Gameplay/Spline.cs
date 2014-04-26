@@ -15,15 +15,18 @@ class Spline : MonoBehaviour
     void Awake()
     {
         var meshFilter = GetComponent<MeshFilter>();
-        SplineMesh = (meshFilter.mesh = new Mesh());
+        SplineMesh = (meshFilter.sharedMesh = new Mesh());
     }
 
     float cacheChecksum;
     public void Update()
     {
+        if (GetComponent<MeshFilter>().sharedMesh == null)
+            Awake();
+
         // go through child nodes and check if checksum matches
         float newChecksum = 0;
-        var childNodes = GetComponentsInChildren<SplineNode>();
+        var childNodes = GetComponentsInChildren<SplineNode>().OrderBy(x => x.name).ToArray();
         foreach (var node in childNodes)
             newChecksum += Vector3.Dot(node.transform.position, Vector3.one);
         cacheChecksum += Width;
@@ -44,7 +47,7 @@ class Spline : MonoBehaviour
         var triangles = new List<int>();
         var uv = new List<Vector2>();
 
-        var nodePositions = nodes.Select(x => x.transform.position).ToList();
+        var nodePositions = nodes.Select(x => x.transform.localPosition).ToList();
 
         SplineMesh.Clear();
         SplineMesh.subMeshCount = 1;
