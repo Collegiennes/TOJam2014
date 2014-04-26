@@ -121,4 +121,9 @@ public class MathfPlus
 
         return BSpline(values[i0], values[i1], values[i2], values[i3], s);
     }
+
+    public static Vector4 PadVector3(Vector3 v)
+    {
+        return new Vector4(v.x, v.y, v.z, 1.0f);
+    }
 }
