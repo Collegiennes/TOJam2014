@@ -8,6 +8,7 @@ public class Hand : MonoBehaviour
 	// constants
 	private const float GRABBED_OFFSET = -250f;
 	private const float RELEASED_OFFSET = 0.0f;
+	private const float RAISE_DURATION = 0.25f;
 	private readonly Vector2 SPEED = new Vector2(800.0f, 1200.0f);
 	
 	// enums
@@ -25,6 +26,7 @@ public class Hand : MonoBehaviour
 	private ObstacleHandle m_GrabbedObstacleHandle = null;
 	private HingeJoint m_GrabbedObstacleJoin = null;
 	private Camera m_HandCamera = null;
+	private float m_GoalHeight = 0.0f;
 	
 	// properties
 	#endregion
@@ -44,7 +46,7 @@ public class Hand : MonoBehaviour
 			movement.x *= Time.deltaTime * SPEED.x;
 			movement.y *= Time.deltaTime * SPEED.y;
 
-			Vector3 newMovement = Quaternion.Euler(m_HandCamera.transform.eulerAngles) * new Vector3(movement.x, 0.0f, movement.y);
+			Vector3 newMovement = /*Quaternion.Euler(m_HandCamera.transform.eulerAngles) */ new Vector3(movement.x, 0.0f, movement.y);
 			transform.position += newMovement;
 		}
 
@@ -93,11 +95,18 @@ public class Hand : MonoBehaviour
 	private void GrabObstacle()
 	{
 		m_Asset.spriteId = m_Asset.GetSpriteIdByName(m_HandGrabbedAssetName);
-		transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, GRABBED_OFFSET);
 
 		if (m_GrabbedObstacleHandle != null && m_GrabbedObstacleJoin == null)
 		{
-			m_GrabbedObstacleHandle.m_Obstacle.transform.position = transform.position - (m_GrabbedObstacleHandle.transform.position - m_GrabbedObstacleHandle.m_Obstacle.transform.position);
+			// Move hand.
+			m_GoalHeight = GRABBED_OFFSET;
+			StopCoroutine("RaiseHand");
+			StartCoroutine("RaiseHand");
+
+			// Setup obstacle.
+			Vector3 newPosition = transform.position - (m_GrabbedObstacleHandle.transform.position - m_GrabbedObstacleHandle.m_Obstacle.transform.position);
+			newPosition.y = m_GrabbedObstacleHandle.m_Obstacle.transform.position.y;
+			m_GrabbedObstacleHandle.m_Obstacle.transform.position = newPosition;
 
 			m_GrabbedObstacleJoin = gameObject.AddComponent<HingeJoint>();
 			m_GrabbedObstacleJoin.connectedBody = m_GrabbedObstacleHandle.m_Obstacle.rigidbody;
@@ -110,12 +119,36 @@ public class Hand : MonoBehaviour
 		if (m_GrabbedObstacleJoin != null)
 		{
 			Destroy(m_GrabbedObstacleJoin);
+			
+			yield return null;
+
+			m_GoalHeight = RELEASED_OFFSET;
+			StopCoroutine("RaiseHand");
+			StartCoroutine("RaiseHand");
 		}
 		
-		yield return null;
-		
 		m_Asset.spriteId = m_Asset.GetSpriteIdByName(m_HandEmptyAssetName);
-		transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, RELEASED_OFFSET);
+	}
+
+	private IEnumerator RaiseHand()
+	{
+		float oldHeight = transform.localPosition.z;
+		float currentHeight = transform.localPosition.z;
+
+		float ratio = 0.0f;
+		float duration = RAISE_DURATION;
+		while (ratio < 1.0f)
+		{
+			duration -= Time.deltaTime;
+
+			ratio = AnimationController.GetInterpolationRatio(0.0f, RAISE_DURATION, (RAISE_DURATION - duration), AnimationController.EaseInOutType.Quad);
+			currentHeight = Mathf.Lerp(oldHeight, m_GoalHeight, ratio);
+			Debug.Log(ratio);
+
+			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, currentHeight);
+
+			yield return null;
+		}
 	}
 	#endregion
 }
