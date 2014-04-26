@@ -6,9 +6,9 @@ public class Hand : MonoBehaviour
 {
 	#region Members and properties
 	// constants
-	private const float SPEED = 800.0f;
 	private const float GRABBED_OFFSET = -250f;
 	private const float RELEASED_OFFSET = 0.0f;
+	private readonly Vector2 SPEED = new Vector2(800.0f, 1200.0f);
 	
 	// enums
 	
@@ -24,16 +24,29 @@ public class Hand : MonoBehaviour
 	// private
 	private ObstacleHandle m_GrabbedObstacleHandle = null;
 	private HingeJoint m_GrabbedObstacleJoin = null;
+	private Camera m_HandCamera = null;
 	
 	// properties
 	#endregion
 	
 	#region Unity API
+	private void Awake()
+	{
+		m_HandCamera = GameObject.Find("HandCamera").GetComponent<Camera>();
+	}
+
 	private void FixedUpdate()
 	{
 		// Movements.
 		Vector2 movement = ControllerInputManager.Instance.GetLeftJoystick(m_ControllerId);
-		transform.position += new Vector3(movement.x, 0.0f, movement.y) * (Time.deltaTime * SPEED);
+		if (movement != Vector2.zero)
+		{
+			movement.x *= Time.deltaTime * SPEED.x;
+			movement.y *= Time.deltaTime * SPEED.y;
+
+			Vector3 newMovement = Quaternion.Euler(m_HandCamera.transform.eulerAngles) * new Vector3(movement.x, 0.0f, movement.y);
+			transform.position += newMovement;
+		}
 
 		// Buttons.
 		if (ControllerInputManager.Instance.GetButton(m_ControllerId, ControllerInputManager.eButtonAliases.GRAB.ToString()))
@@ -44,6 +57,9 @@ public class Hand : MonoBehaviour
 		{
 			StartCoroutine("ReleaseObstacle");
 		}
+
+		// Look at.
+		transform.LookAt(-m_HandCamera.transform.position);
 	}
 
 	private void OnTriggerEnter(Collider other) 
