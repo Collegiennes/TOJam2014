@@ -17,6 +17,7 @@ public class Hand : MonoBehaviour
 	public tk2dSprite m_Asset = null;
 	public string m_HandGrabbedAssetName = "";
 	public string m_HandEmptyAssetName = "";
+	public string m_HandReadyAssetName = "";
 
 	// protected
 	
@@ -50,6 +51,7 @@ public class Hand : MonoBehaviour
 		ObstacleHandle handle = other.GetComponent<ObstacleHandle>();
 		if (m_GrabbedObstacleHandle == null && handle != null)
 		{
+			m_Asset.spriteId = m_Asset.GetSpriteIdByName(m_HandReadyAssetName);
 			m_GrabbedObstacleHandle = handle;
 		}
 	}
@@ -59,6 +61,7 @@ public class Hand : MonoBehaviour
 		ObstacleHandle handle = other.GetComponent<ObstacleHandle>();
 		if (handle != null && handle == m_GrabbedObstacleHandle)
 		{
+			m_Asset.spriteId = m_Asset.GetSpriteIdByName(m_HandEmptyAssetName);
 			m_GrabbedObstacleHandle = null;
 		}
 	}
@@ -82,7 +85,6 @@ public class Hand : MonoBehaviour
 
 			m_GrabbedObstacleJoin = gameObject.AddComponent<HingeJoint>();
 			m_GrabbedObstacleJoin.connectedBody = m_GrabbedObstacleHandle.m_Obstacle.rigidbody;
-			m_GrabbedObstacleJoin.axis = new Vector3(0.0f, 0.0f, 1.0f);
 			m_GrabbedObstacleJoin.anchor = m_GrabbedObstacleHandle.transform.localPosition;
 		}
 	}
